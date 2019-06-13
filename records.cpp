@@ -16,6 +16,32 @@ static inline std::string rtrim(std::string s, uint8_t pChar) {
 	return s;
 }
 
+/**
+ * Comparision operator for sRecord
+ */
+bool sRecord::operator<(const sRecord& pRight) const {
+
+	switch (mKnownGames[pRight.mGameID].mEventSorting[pRight.mEventID]) {
+
+	case 0:	// Less than
+		if (mScore < pRight.mScore)
+			return true;
+		break;
+
+	case 1:	// Greater than
+		if (mScore > pRight.mScore)
+			return true;
+		break;
+
+	default:
+		std::cout << "Unknown comparision for scores: " << pRight.mGameID << " " << pRight.mEventID;
+		break;
+	}
+
+	return false;
+}
+
+
 cRecords::cRecords() {
 
 	auto json = gResources->FileRead("records.json");
@@ -81,8 +107,6 @@ bool cRecords::importCartRecords(const std::string& pFile) {
 	if (memcmp("C64 CARTRIDGE   ", cart->data(), 0x0F))
 		return false;
 
-	std::cout << "Importing from " << pFile << "\n";
-
 	uint8_t* raw = (uint8_t*) (cart->data() + 0xBC630);
 	for (auto& knowngame : mKnownGames) {
 		sRecordRaw* recordPtr = (sRecordRaw*)raw;
@@ -111,8 +135,6 @@ bool cRecords::importRecordsDisk(const std::string& pFile) {
 					if (File->mFileSize > 2)
 						continue;
 
-					std::cout << "Importing from " << pFile << "\n";
-
 					std::cout << knowngame.mName << "\n";
 
 					// + 2 to skip the PRG load address
@@ -138,7 +160,6 @@ bool cRecords::findRecordsDisk(const std::string& pFile) {
 		for (auto& knowndisk : knowngame.mDisks) {
 			// Label match for this game?
 			if (Disk.disklabelGet() == knowndisk.mLabel) {
-				std::cout << "Searching blocks on " << pFile << "\n";
 
 				for (size_t Track = 1; Track <= Disk.trackCount(); ++Track) {
 					for (size_t Sector = 0; Sector < Disk.trackRange(Track); ++Sector) {
@@ -199,32 +220,13 @@ tRecords cRecords::getByName(std::string pName) {
 	return result;
 }
 
-bool sRecord::operator<(const sRecord& pRight) const {
-	
-	switch(mKnownGames[pRight.mGameID].mEventSorting[pRight.mEventID]) {
-
-		case 0:	// Less than
-			if (mScore < pRight.mScore)
-				return true;
-			break;
-		
-		case 1:	// Greater than
-			if (mScore > pRight.mScore)
-				return true;
-			break;
-	}
-
-	return false;
-}
-
 /**
  * Get all records for 'pGame'
  */
 tRecordMap cRecords::getByGame(eGames pGame) {
 	tRecordMap result;
-	
-
 	auto game = KnownGameByID(pGame);
+
 	// loop each event in this game
 	for (auto& event_records : mRecords[game.mName]) {
 		std::vector<sRecord> records;
@@ -246,23 +248,53 @@ tRecordMap cRecords::getByGame(eGames pGame) {
 	return result;
 }
 
-std::string cRecords::dumpAllRecords() {
+/**
+ * Dump all records for an event
+ */
+std::string cRecords::dumpRecordsForEvent(const eGames pGame, const size_t pEventID, const tRecords& pRecords) {
+	std::stringstream result;
+	auto game = KnownGameByID(pGame);
+
+	for (auto& record : pRecords) {
+
+		// Filtering by name?
+		if (gParameters.mFilterName.size()) {
+			if (str_to_upper(record.mName) != str_to_upper(gParameters.mFilterName))
+				continue;
+		}
+
+		result << std::setw(20) << game.mEvents[pEventID] << ": ";
+		result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << "\n";
+	}
+	return result.str();
+}
+
+/**
+ * Dump all records for all games
+ */
+std::string cRecords::dumpRecordsAll() {
 	std::stringstream result;
 
 	// Each Game
-	for (auto& game : mKnownGames) {
-		result << "\n" << game.mName << "\n";
+	for (auto& game : mKnownGames)
+		result << dumpRecordsByGame(game.mGameID);
 
-		auto events = gRecords->getByGame(game.mGameID);
-		for (auto& event : events) {
+	return result.str();
+}
 
-			for (auto& record : event.second) {
-				result << std::setw(20) << game.mEvents[event.first] << ": ";
-				result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << "\n";
-			}
-		}
+/**
+ * Dump all records for a game
+ */
+std::string cRecords::dumpRecordsByGame(eGames pGame) {
+	std::stringstream result;
+	auto game = KnownGameByID(pGame);
+	auto events = gRecords->getByGame(pGame);
+
+	result << "\n" << game.mName << "\n";
+
+	for (auto& event : events) {
+		result << dumpRecordsForEvent(pGame, event.first, event.second);
 	}
-
 
 	return result.str();
 }

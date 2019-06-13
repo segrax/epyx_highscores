@@ -40,6 +40,31 @@ bool cResource::FileSave(const std::string& pFile, const std::string& pData) {
 	return true;
 }
 
+bool cResource::FileExists(const std::string& pPath) const {
+	struct stat info;
+
+	if (stat(pPath.c_str(), &info) != 0)
+		return false;
+	else if (info.st_mode & S_IFDIR)
+		return true;
+	else if (info.st_mode & S_IFMT)
+		return true;
+
+	return false;
+}
+
+bool cResource::isFile(const std::string& pPath) const {
+	struct stat info;
+
+	if (stat(pPath.c_str(), &info) != 0)
+		return false;
+	else if (info.st_mode & S_IFDIR)
+		return false;
+	else if (info.st_mode & S_IFMT)
+		return true;
+
+	return false;
+}
 #ifdef WIN32
 #include "Windows.h"
 #include <direct.h>

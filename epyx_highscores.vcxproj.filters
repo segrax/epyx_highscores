@@ -47,5 +47,8 @@
     <ClInclude Include="epyx_highscores.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="cxxopts.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

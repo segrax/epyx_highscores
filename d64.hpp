@@ -36,7 +36,7 @@ struct sD64Chain {
 struct sD64File {
 	bool	  mChainBroken;				// File Chain Broken
 	std::string mName;					// Name of the file
-	size_t	  mTrack, mSector;			// Starting T/S of file
+	uint8_t	  mTrack, mSector;			// Starting T/S of file
 	size_t	  mFileSize;				// Number of blocks used by file
 	eD64FileType mFileType;				// Type of file
 
@@ -132,11 +132,11 @@ public:
 
 	uint8_t* sectorPtr(uint32_t pTrack, uint32_t pSector);				// Obtain pointer to 'pTrack'/'pSector' in the disk buffer
 	
-	inline size_t	 trackRange(const size_t pTrack) const {				// Number of sectors in 'pTrack'
+	inline uint8_t trackRange(const size_t pTrack) const {				// Number of sectors in 'pTrack'
 		return 21 - (pTrack > 17) * 2 - (pTrack > 24) - (pTrack > 30);
 	}
 
-	inline size_t	trackCount() const {
+	inline size_t trackCount() const {
 		return mTrackCount;
 	}
 

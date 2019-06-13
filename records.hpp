@@ -75,7 +75,8 @@ struct sRecord {
 };
 
 typedef std::vector<sRecord> tRecords;
-typedef std::map<size_t, tRecords> tRecordMap;
+typedef std::map<size_t, tRecords> tRecordMap;	// EventID, Records
+typedef std::pair<size_t, tRecords> tRecordMapPair;
 
 class cRecords {
 
@@ -92,7 +93,9 @@ public:
 	tRecords getByName(std::string pName);
 	tRecordMap getByGame(eGames pGame);
 
-	std::string dumpAllRecords();
+	std::string dumpRecordsForEvent(const eGames pGame, const size_t pEventID, const tRecords& pRecord);
+	std::string dumpRecordsByGame(eGames pGame);
+	std::string dumpRecordsAll();
 
 protected:
 	Json mRecords;

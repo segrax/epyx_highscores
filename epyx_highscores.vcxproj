@@ -159,6 +159,7 @@
     <ClCompile Include="resource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cxxopts.hpp" />
     <ClInclude Include="d64.hpp" />
     <ClInclude Include="epyx_highscores.hpp" />
     <ClInclude Include="json.hpp" />

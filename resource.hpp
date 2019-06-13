@@ -10,5 +10,7 @@ public:
 	std::string	FileReadStr(const std::string& pFile);
 
 	bool FileSave(const std::string& pFile, const std::string& pData);
+	bool FileExists(const std::string& pPath) const;
+	bool isFile(const std::string& pPath) const;
 
 };

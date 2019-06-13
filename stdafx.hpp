@@ -17,6 +17,7 @@ using Json = nlohmann::json;
 extern std::shared_ptr<cResource> gResources;
 extern std::vector<sKnownGame> mKnownGames;
 extern std::shared_ptr<cRecords> gRecords;
+extern sParameters gParameters;
 
 sKnownGame KnownGameByID(eGames pGame);
 
@@ -37,3 +38,7 @@ inline void writeLEWord(const void* buffer, uint16_t pValue) {
 	*wordBytes = pValue;
 }
 
+inline std::string str_to_upper(std::string pStr) {
+	std::transform(pStr.begin(), pStr.end(), pStr.begin(), ::toupper);
+	return pStr;
+}

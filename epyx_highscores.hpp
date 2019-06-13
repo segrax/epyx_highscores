@@ -19,3 +19,25 @@ struct sKnownGame {
 	std::vector<std::string> mEvents;
 	std::vector<size_t> mEventSorting;
 };
+
+struct sParameters {
+	bool mAbout;
+	bool mHelp;
+	bool mList;	
+	bool mListAll;			// List all records
+	bool mListKnownGames;	// Display known games list
+
+	std::string mFilterGame;// Filter records for this game
+	std::string mFilterName;// Filter records for this name 
+
+	std::string mImportPath;
+	std::string mImportCart;
+
+	sParameters() {
+		mAbout = false;
+		mHelp = false;
+		mList = false;
+		mListAll = false;
+		mListKnownGames = false;
+	}
+};
