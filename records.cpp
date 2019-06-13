@@ -2,6 +2,7 @@
 #include <chrono>
 #include <sstream>
 #include <iomanip>
+#include <time.h>
 
 static inline std::string ltrim(std::string s, uint8_t pChar) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [pChar](int ch) {
@@ -257,6 +258,11 @@ std::string cRecords::dumpRecordsForEvent(const eGames pGame, const size_t pEven
 
 	for (auto& record : pRecords) {
 
+		time_t t = time_t(record.mTimestamp);
+		tm tm;
+		localtime_s(&tm, &t);
+		auto date = std::put_time(&tm, "%Y-%m-%d");
+
 		// Filtering by name?
 		if (gParameters.mFilterName.size()) {
 			if (str_to_upper(record.mName) != str_to_upper(gParameters.mFilterName))
@@ -264,7 +270,7 @@ std::string cRecords::dumpRecordsForEvent(const eGames pGame, const size_t pEven
 		}
 
 		result << std::setw(20) << game.mEvents[pEventID] << ": ";
-		result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << "\n";
+		result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << " on " << std::setw(8) << date << "\n";
 	}
 	return result.str();
 }

@@ -7,17 +7,17 @@ enum eGames {
 };
 
 struct sKnownDisk {
-	std::string mLabel;
-	std::string mRecordFile;
+	std::string mLabel;					// Disk Label
+	std::string mRecordFile;			// WorldRecord filename
 };
 
 struct sKnownGame {
-	eGames mGameID;
-	std::string mName;
+	eGames mGameID;						// ID of game
+	std::string mName;					// Title of game
 
-	std::vector<sKnownDisk> mDisks;
-	std::vector<std::string> mEvents;
-	std::vector<size_t> mEventSorting;
+	std::vector<sKnownDisk> mDisks;		// Known D64s
+	std::vector<std::string> mEvents;	// Name of events
+	std::vector<size_t> mEventSorting;	// Sorting mechanism for records for events
 };
 
 struct sParameters {
@@ -30,9 +30,12 @@ struct sParameters {
 	std::string mFilterGame;// Filter records for this game
 	std::string mFilterName;// Filter records for this name 
 
-	std::string mImportPath;
-	std::string mImportCart;
+	std::string mImportPath;// Path to import from D64/CRT
+	std::string mImportCart;// Path to import from a specific CRT
 
+	/**
+	 * Constructor: Set parameters to defaults
+	 */
 	sParameters() {
 		mAbout = false;
 		mHelp = false;

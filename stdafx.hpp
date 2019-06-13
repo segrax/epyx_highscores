@@ -20,6 +20,7 @@ extern std::shared_ptr<cRecords> gRecords;
 extern sParameters gParameters;
 
 sKnownGame KnownGameByID(eGames pGame);
+sKnownGame KnownGameByName(std::string pName);
 
 // Read a word from the buffer
 inline uint16_t readWord(const void* buffer) {

@@ -27,6 +27,9 @@
     <ClCompile Include="records.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="known_games.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.hpp">

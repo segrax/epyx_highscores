@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="d64.cpp" />
     <ClCompile Include="epyx_highscores.cpp" />
+    <ClCompile Include="known_games.cpp" />
     <ClCompile Include="records.cpp" />
     <ClCompile Include="resource.cpp" />
   </ItemGroup>
