@@ -1,6 +1,7 @@
 #include "stdafx.hpp"
 #include <chrono>
-#include <regex>
+#include <sstream>
+#include <iomanip>
 
 static inline std::string ltrim(std::string s, uint8_t pChar) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [pChar](int ch) {
@@ -28,9 +29,9 @@ cRecords::~cRecords() {
 	gResources->FileSave("records.json", mRecords.dump(1));
 }
 
-bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID) {
-	auto playerName = rtrim(rtrim(pRawRecords[pEventID].getName(), 0x20), 0);
-	auto playerScore = ltrim(ltrim(pRawRecords[pEventID].getScore(pGame.mGameID, pEventID), 0x20), 0);
+bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
+	auto playerName = rtrim(rtrim(pRawRecords[mEventID].getName(), 0x20), 0);
+	auto playerScore = ltrim(ltrim(pRawRecords[mEventID].getScore(pGame.mGameID, mEventID), 0x20), 0);
 
 	if (!playerName.size() || !playerScore.size())
 		return false;
@@ -48,7 +49,7 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID) {
 		}
 	}
 
-	auto& eventName = pGame.mEvents[pEventID];
+	auto& eventName = pGame.mEvents[mEventID];
 	std::cout << eventName << ": " << playerName << " - " << playerScore << "\n";
 
 	if (mRecords[pGame.mName].find(eventName) == mRecords[pGame.mName].end()) {
@@ -61,7 +62,7 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID) {
 	record["name"] = playerName;
 	record["score"] = playerScore;
 	record["gameid"] = pGame.mGameID;
-	record["eventid"] = pEventID;
+	record["eventid"] = mEventID;
 	record["date"] = std::chrono::system_clock::to_time_t(now);
 
 	mRecords[pGame.mName][eventName].emplace_back(record);
@@ -77,16 +78,18 @@ bool cRecords::importCartRecords(const std::string& pFile) {
 	auto cart = gResources->FileRead(pFile);
 	if (!cart)
 		return false;
+	if (memcmp("C64 CARTRIDGE   ", cart->data(), 0x0F))
+		return false;
 
-	uint8_t* raw = cart->data() + 0xBC630;
+	std::cout << "Importing from " << pFile << "\n";
 
+	uint8_t* raw = (uint8_t*) (cart->data() + 0xBC630);
 	for (auto& knowngame : mKnownGames) {
-
-		sRecordRaw* RawRecords = (sRecordRaw*)(raw);
+		sRecordRaw* recordPtr = (sRecordRaw*)raw;
 		for (size_t id = 0; id < knowngame.mEvents.size(); ++id)
-			gRecords->add(RawRecords, knowngame, id);
+			gRecords->add(recordPtr, knowngame, id);
 
-		raw += 0x100;
+		raw += (0x100);
 	}
 
 	return true;
@@ -95,7 +98,7 @@ bool cRecords::importCartRecords(const std::string& pFile) {
 /**
  * Import records from a disk
  */
-bool cRecords::importRecords(const std::string& pFile) {
+bool cRecords::importRecordsDisk(const std::string& pFile) {
 	cD64 Disk(pFile);
 
 	for (auto& knowngame : mKnownGames) {
@@ -107,6 +110,8 @@ bool cRecords::importRecords(const std::string& pFile) {
 				if (File) {
 					if (File->mFileSize > 2)
 						continue;
+
+					std::cout << "Importing from " << pFile << "\n";
 
 					std::cout << knowngame.mName << "\n";
 
@@ -125,7 +130,7 @@ bool cRecords::importRecords(const std::string& pFile) {
 /**
  * Find older records on a disk
  */
-bool cRecords::findRecords(const std::string& pFile) {
+bool cRecords::findRecordsDisk(const std::string& pFile) {
 	cD64 Disk(pFile);
 
 	for (auto& knowngame : mKnownGames) {
@@ -133,12 +138,14 @@ bool cRecords::findRecords(const std::string& pFile) {
 		for (auto& knowndisk : knowngame.mDisks) {
 			// Label match for this game?
 			if (Disk.disklabelGet() == knowndisk.mLabel) {
+				std::cout << "Searching blocks on " << pFile << "\n";
 
 				for (size_t Track = 1; Track <= Disk.trackCount(); ++Track) {
 					for (size_t Sector = 0; Sector < Disk.trackRange(Track); ++Sector) {
 						auto ptr = Disk.sectorPtr(Track, Sector);
 						auto prgLoadAddr = readLEWord(&ptr[0x02]);
 
+						// This is a really crap search for high scores
 						// Highscores load to 0x0E00 and 0x0B00
 						if (prgLoadAddr == 0x0E00 || prgLoadAddr == 0x0B00) {
 							// +4 skip the T/S chain, and the load address
@@ -192,23 +199,70 @@ tRecords cRecords::getByName(std::string pName) {
 	return result;
 }
 
+bool sRecord::operator<(const sRecord& pRight) const {
+	
+	switch(mKnownGames[pRight.mGameID].mEventSorting[pRight.mEventID]) {
+
+		case 0:	// Less than
+			if (mScore < pRight.mScore)
+				return true;
+			break;
+		
+		case 1:	// Greater than
+			if (mScore > pRight.mScore)
+				return true;
+			break;
+	}
+
+	return false;
+}
+
 /**
  * Get all records for 'pGame'
  */
 tRecordMap cRecords::getByGame(eGames pGame) {
 	tRecordMap result;
+	
 
 	auto game = KnownGameByID(pGame);
 	// loop each event in this game
 	for (auto& event_records : mRecords[game.mName]) {
+		std::vector<sRecord> records;
+
 		// Each record
 		for (auto& record : event_records) {
-			result.emplace(
-				std::make_pair(record["eventid"],
-					sRecord{ record["gameid"], record["eventid"], record["name"], record["score"], record["date"] }
-			));
+			records.push_back( sRecord{ record["gameid"], record["eventid"], record["name"], record["score"], record["date"] });
 		}
+		if (records.size() > 1) {
+			std::sort(records.begin(), records.end(), [](auto& a, auto& b) {
+				return a < b;
+				});
+		}
+
+		if(records.size())
+			result.emplace(std::make_pair(records[0].mEventID, records));
 	}
 
 	return result;
+}
+
+std::string cRecords::dumpAllRecords() {
+	std::stringstream result;
+
+	// Each Game
+	for (auto& game : mKnownGames) {
+		result << "\n" << game.mName << "\n";
+
+		auto events = gRecords->getByGame(game.mGameID);
+		for (auto& event : events) {
+
+			for (auto& record : event.second) {
+				result << std::setw(20) << game.mEvents[event.first] << ": ";
+				result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << "\n";
+			}
+		}
+	}
+
+
+	return result.str();
 }

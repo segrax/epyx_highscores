@@ -1,8 +1,8 @@
 enum eGames {
-	eGAME_WORLD,
-	eGAME_WINTER,
 	eGAME_SUMMER,
 	eGAME_SUMMER2,
+	eGAME_WINTER,
+	eGAME_WORLD,
 	eGAME_CALIFORNIA
 };
 
@@ -17,4 +17,5 @@ struct sKnownGame {
 
 	std::vector<sKnownDisk> mDisks;
 	std::vector<std::string> mEvents;
+	std::vector<size_t> mEventSorting;
 };

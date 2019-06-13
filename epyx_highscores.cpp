@@ -20,6 +20,16 @@ std::vector<sKnownGame> mKnownGames = {
 			"Freestyle Relay",
 			"100m Freestyle",
 			"Skeet Shooting"
+		},
+		{
+			1,	// Pole
+			1,	// Platform
+			0,	// 4x400m
+			0,	// 100m Dash
+			1,	// Gym
+			0,	// Freestyle
+			0,	// 100m Free
+			1	// Skeet
 		}
 	},
 
@@ -38,6 +48,16 @@ std::vector<sKnownGame> mKnownGames = {
 			"Fencing",
 			"Cycling",
 			"Kayaking"
+		},
+		{
+			1,	// Triple Jump
+			0,	// Rowing
+			1,	// Javelin
+			0,	// Equest
+			1,	// High
+			0,	// Fencing
+			1,	// Cycl
+			1	// Kayaking
 		}
 	},
 
@@ -45,7 +65,8 @@ std::vector<sKnownGame> mKnownGames = {
 	{ eGAME_WINTER, "WINTER GAMES",
 		{
 			{ "WINTER GAMES A", "C" },
-			{ "WINTER GAMES B", "C" }
+			{ "WINTER GAMES B", "C" },
+			{ "WINER GAMES B", "C" }
 		},
 		{
 			"Hot Dog",
@@ -55,6 +76,15 @@ std::vector<sKnownGame> mKnownGames = {
 			"Speed Skating",
 			"Free Skating",
 			"Bobsled"
+		},
+		{
+			1,	// Hot Dog
+			0,	// Biathlon
+			1,	// Figure
+			1,	// Ski Jump
+			0,	// Speed Skate
+			1,	// Free Skate
+			1	// Bobsled
 		}
 	},
 
@@ -72,6 +102,16 @@ std::vector<sKnownGame> mKnownGames = {
 			"Bull Riding",
 			"Caber Toss",
 			"Sumo Wrestling"
+		},
+		{
+			1,	// Weight
+			1,	// Barrel
+			1,	// Cliff
+			0,	// Slalom
+			1,	// Log
+			1,	// Bull
+			1,	// Caber
+			0	// Sumo
 		}
 	},
 
@@ -87,6 +127,14 @@ std::vector<sKnownGame> mKnownGames = {
 			"Skating",
 			"BMX",
 			"Flying disk"
+		},
+		{
+			0,
+			0,
+			0,
+			0,
+			0,
+			0
 		}
 	}
 };
@@ -110,23 +158,18 @@ int main()
 	auto files = gResources->directoryList( gResources->getcwd(), "D64");
 	for (auto& file : files) {
 
-		gRecords->importRecords(file);
-		gRecords->findRecords(file);
+		gRecords->importRecordsDisk(file);
+		gRecords->findRecordsDisk(file);
 	}
 
-	std::cout << "Checking 'epyxgames.crt'\n";
-	gRecords->importCartRecords("epyxgames.crt");
+	std::cout << "Searching for CRT files in current directory\n";
+	files = gResources->directoryList(gResources->getcwd(), "crt");
+	for (auto& file : files) {
+		gRecords->importCartRecords(file);
+	}
 
 	std::cout << "\nListing Records\n";
-	for (auto& game : mKnownGames) {
-		auto records = gRecords->getByGame(game.mGameID);
-
-		std::cout << "\n" << game.mName << "\n";
-		for (auto& record : records) {
-			std::cout << game.mEvents[record.first] << ": ";
-			std::cout << record.second.mName << " - " << record.second.mScore << "\n";
-		}
-	}
+	std::cout << gRecords->dumpAllRecords();
 
 	//gRecords->getByName("ROBERT");
 }

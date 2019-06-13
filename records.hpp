@@ -7,7 +7,7 @@ struct sRecordRaw {
 		return std::string((const char*)& mName[0], 0x0A);
 	}
 
-	std::string getScore(eGames pGame, size_t pEventID) const {
+	std::string getScore(eGames pGame, size_t mEventID) const {
 
 		// Most scores use 7 characters
 		std::string res = std::string((const char*)& mScore[0], 0x07);
@@ -19,7 +19,7 @@ struct sRecordRaw {
 		 * World Games
 		 */
 		case eGAME_WORLD:
-			switch (pEventID) {
+			switch (mEventID) {
 			default:
 				return res;
 
@@ -36,7 +36,7 @@ struct sRecordRaw {
 		 * Summer Games
 		 */
 		case eGAME_SUMMER:
-			switch (pEventID) {
+			switch (mEventID) {
 			default:
 				return res;
 
@@ -49,7 +49,7 @@ struct sRecordRaw {
 		 * Summer Games II
 		 */
 		case eGAME_SUMMER2:
-			switch (pEventID) {
+			switch (mEventID) {
 			default:
 				return res;
 
@@ -66,14 +66,16 @@ struct sRecordRaw {
 
 struct sRecord {
 	eGames mGameID;
-	size_t pEventID;
+	size_t mEventID;
 	std::string mName;
 	std::string mScore;
 	size_t mTimestamp;
+
+	bool operator<(const sRecord& pRight) const;
 };
 
 typedef std::vector<sRecord> tRecords;
-typedef std::multimap<size_t, sRecord> tRecordMap;
+typedef std::map<size_t, tRecords> tRecordMap;
 
 class cRecords {
 
@@ -82,13 +84,15 @@ public:
 	~cRecords();
 
 
-	bool add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID);
+	bool add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID);
 	bool importCartRecords(const std::string& pFile);
-	bool importRecords(const std::string& pFile);
-	bool findRecords(const std::string& pFile);
+	bool importRecordsDisk(const std::string& pFile);
+	bool findRecordsDisk(const std::string& pFile);
 
 	tRecords getByName(std::string pName);
 	tRecordMap getByGame(eGames pGame);
+
+	std::string dumpAllRecords();
 
 protected:
 	Json mRecords;
