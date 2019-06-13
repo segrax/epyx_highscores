@@ -6,40 +6,6 @@ std::shared_ptr<cRecords> gRecords;
 
 std::vector<sKnownGame> mKnownGames = {
 
-	// World Games
-	{ eGAME_WORLD, "WORLD GAMES", 
-		{
-			{ "++", "WORLDGAMES3" },
-		},
-		{
-			"Weight Lifting",
-			"Barrel Jumping",
-			"Cliff Diving",
-			"Slalom Skiing",
-			"Log Rolling",
-			"Bull Riding",
-			"Caber Toss",
-			"Sumo Wrestling"
-		}
-	},
-	
-	// Winter Games
-	{ eGAME_WINTER, "WINTER GAMES", 
-		{
-			{ "WINTER GAMES A", "C" },
-			{ "WINTER GAMES B", "C" }
-		},
-		{
-			"Hot Dog",
-			"Biathlon",
-			"Figure Skating",
-			"Ski Jump",
-			"Speed Skating",
-			"Free Skating",
-			"Bobsled"
-		}
-	},
-
 	// Summer Games
 	{ eGAME_SUMMER, "SUMMER GAMES",
 		{
@@ -58,7 +24,7 @@ std::vector<sKnownGame> mKnownGames = {
 	},
 
 	// Summer Games II
-	{ eGAME_SUMMER2, "SUMMER GAMES II", 
+	{ eGAME_SUMMER2, "SUMMER GAMES II",
 		{
 			{ "SUMMER GAMES II", "WR" },
 			{ "SUMMER GAMES 2B", "WR" }
@@ -72,6 +38,55 @@ std::vector<sKnownGame> mKnownGames = {
 			"Fencing",
 			"Cycling",
 			"Kayaking"
+		}
+	},
+
+	// Winter Games
+	{ eGAME_WINTER, "WINTER GAMES",
+		{
+			{ "WINTER GAMES A", "C" },
+			{ "WINTER GAMES B", "C" }
+		},
+		{
+			"Hot Dog",
+			"Biathlon",
+			"Figure Skating",
+			"Ski Jump",
+			"Speed Skating",
+			"Free Skating",
+			"Bobsled"
+		}
+	},
+
+	// World Games
+	{ eGAME_WORLD, "WORLD GAMES", 
+		{
+			{ "++", "WORLDGAMES3" },
+		},
+		{
+			"Weight Lifting",
+			"Barrel Jumping",
+			"Cliff Diving",
+			"Slalom Skiing",
+			"Log Rolling",
+			"Bull Riding",
+			"Caber Toss",
+			"Sumo Wrestling"
+		}
+	},
+
+	// California Games
+	{ eGAME_CALIFORNIA, "CALIFORNIA GAMES",
+		{
+			{ "EAGLE SOFT INC.", "HS"}
+		},
+		{
+			"Halfpipe",
+			"Footbag",
+			"Surfing",
+			"Skating",
+			"BMX",
+			"Flying disk"
 		}
 	}
 };
@@ -99,8 +114,10 @@ int main()
 		gRecords->findRecords(file);
 	}
 
+	std::cout << "Checking 'epyxgames.crt'\n";
+	gRecords->importCartRecords("epyxgames.crt");
+
 	std::cout << "\nListing Records\n";
-	//gRecords->getByName("ROBERT");
 	for (auto& game : mKnownGames) {
 		auto records = gRecords->getByGame(game.mGameID);
 
@@ -108,8 +125,9 @@ int main()
 		for (auto& record : records) {
 			std::cout << game.mEvents[record.first] << ": ";
 			std::cout << record.second.mName << " - " << record.second.mScore << "\n";
-
 		}
 	}
+
+	//gRecords->getByName("ROBERT");
 }
 

@@ -29,8 +29,11 @@ cRecords::~cRecords() {
 }
 
 bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID) {
-	auto playerName = rtrim(pRawRecords[pEventID].getName(), 0x20);
-	auto playerScore = ltrim(pRawRecords[pEventID].getScore(pGame.mGameID, pEventID), 0x20);
+	auto playerName = rtrim(rtrim(pRawRecords[pEventID].getName(), 0x20), 0);
+	auto playerScore = ltrim(ltrim(pRawRecords[pEventID].getScore(pGame.mGameID, pEventID), 0x20), 0);
+
+	if (!playerName.size() || !playerScore.size())
+		return false;
 
 	if (mRecords.find(pGame.mName) == mRecords.end()) {
 		mRecords[pGame.mName] = Json();
@@ -65,6 +68,33 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID) {
 	return true;
 }
 
+/**
+ * Import World Records from the "Epyx Games Collection" cartridge
+ *  @see: https://csdb.dk/release/?id=107705
+ */
+bool cRecords::importCartRecords(const std::string& pFile) {
+
+	auto cart = gResources->FileRead(pFile);
+	if (!cart)
+		return false;
+
+	uint8_t* raw = cart->data() + 0xBC630;
+
+	for (auto& knowngame : mKnownGames) {
+
+		sRecordRaw* RawRecords = (sRecordRaw*)(raw);
+		for (size_t id = 0; id < knowngame.mEvents.size(); ++id)
+			gRecords->add(RawRecords, knowngame, id);
+
+		raw += 0x100;
+	}
+
+	return true;
+}
+
+/**
+ * Import records from a disk
+ */
 bool cRecords::importRecords(const std::string& pFile) {
 	cD64 Disk(pFile);
 
@@ -92,6 +122,9 @@ bool cRecords::importRecords(const std::string& pFile) {
 	return true;
 }
 
+/**
+ * Find older records on a disk
+ */
 bool cRecords::findRecords(const std::string& pFile) {
 	cD64 Disk(pFile);
 

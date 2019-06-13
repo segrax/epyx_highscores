@@ -2,7 +2,8 @@ enum eGames {
 	eGAME_WORLD,
 	eGAME_WINTER,
 	eGAME_SUMMER,
-	eGAME_SUMMER2
+	eGAME_SUMMER2,
+	eGAME_CALIFORNIA
 };
 
 struct sKnownDisk {

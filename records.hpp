@@ -83,6 +83,7 @@ public:
 
 
 	bool add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t pEventID);
+	bool importCartRecords(const std::string& pFile);
 	bool importRecords(const std::string& pFile);
 	bool findRecords(const std::string& pFile);
 
