@@ -155,11 +155,14 @@
   <ItemGroup>
     <ClCompile Include="d64.cpp" />
     <ClCompile Include="epyx_highscores.cpp" />
+    <ClCompile Include="records.cpp" />
     <ClCompile Include="resource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d64.hpp" />
+    <ClInclude Include="epyx_highscores.hpp" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="records.hpp" />
     <ClInclude Include="resource.hpp" />
     <ClInclude Include="stdafx.hpp" />
   </ItemGroup>

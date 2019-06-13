@@ -24,6 +24,9 @@
     <ClCompile Include="d64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="records.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.hpp">
@@ -36,6 +39,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="records.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="epyx_highscores.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -29,6 +29,17 @@ tSharedBuffer cResource::FileRead(const std::string& pFile) {
 	return fileBuffer;
 }
 
+bool cResource::FileSave(const std::string& pFile, const std::string& pData) {
+
+	std::ofstream outfile(pFile, std::ofstream::binary);
+	if (!outfile.is_open())
+		return false;
+
+	outfile << pData;
+	outfile.close();
+	return true;
+}
+
 #ifdef WIN32
 #include "Windows.h"
 #include <direct.h>

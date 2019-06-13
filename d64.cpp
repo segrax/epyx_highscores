@@ -682,7 +682,6 @@ bool cD64::fileSave( std::string pFilename, uint8_t *pData, size_t pBytes, uint1
 
 	// Loop until there is no bytes left to save
 	while( bytesRemain ) {
-		
 		// Get available T/S
 		if( bamSectorFree( track, sector ) == false )
 			return false;
@@ -691,7 +690,6 @@ bool cD64::fileSave( std::string pFilename, uint8_t *pData, size_t pBytes, uint1
 		if(buffer) {
 			buffer[0] = track;
 			buffer[1] = sector;
-
 		} else {
 			File.mTrack = track;
 			File.mSector = sector;
@@ -699,11 +697,9 @@ bool cD64::fileSave( std::string pFilename, uint8_t *pData, size_t pBytes, uint1
 
 		// Grab buffer to next sector
 		buffer = sectorPtr( track, sector );
-		
 		// If its the first sector, we have to write the load address
 		if( sectorFirst ) {
 			writeLEWord( &buffer[0x02], pLoadAddress );
-
 			// Copy filedata
 			if(bytesRemain < 0xFC )
 				copySize = bytesRemain;
@@ -714,10 +710,8 @@ bool cD64::fileSave( std::string pFilename, uint8_t *pData, size_t pBytes, uint1
 
 			// Copy the source to the disk buffer
 			memcpy( buffer + 4, bufferSrc, copySize );
-
 		} else {
 			// Normal sector write
-
 			// Copy filedata
 			if(bytesRemain < 0xFE )
 				copySize = bytesRemain;
@@ -845,9 +839,8 @@ std::vector< sD64File* > cD64::directoryGet( std::string pFind ) {
 }
 
 std::string cD64::disklabelGet() {
-	std::string Label;
-
 	uint8_t* buffer = sectorPtr(18, 0);
-
+	if (!buffer)
+		return "";
 	return stringRip(&buffer[0x90], 0xA0, 0x10);
 }

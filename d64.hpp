@@ -100,11 +100,7 @@ private:
 	void						 filesCleanup();										// Memory Cleanup
 	bool						 fileLoad( sD64File *pFile );							// Load a file from the disk
 
-	uint8_t*				sectorPtr(uint32_t pTrack, uint32_t pSector );				// Obtain pointer to 'pTrack'/'pSector' in the disk buffer
 
-	inline size_t	 trackRange(const size_t pTrack) const {				// Number of sectors in 'pTrack'
-		return 21 - (pTrack > 17) * 2 - (pTrack > 24) - (pTrack > 30);
-	}
 
 	inline bool					 bamTrackSectorUse( unsigned char pTrack, unsigned char pSector ) {	// Is 'pTrack' / 'pSector' free?
 		if( pTrack == 0 || pTrack > mTrackCount || pSector > trackRange(pTrack) )
@@ -132,6 +128,16 @@ public:
 		for(size_t i = 1; i <= mTrackCount; ++i )
 			result += mBamFree[i];
 		return result;
+	}
+
+	uint8_t* sectorPtr(uint32_t pTrack, uint32_t pSector);				// Obtain pointer to 'pTrack'/'pSector' in the disk buffer
+	
+	inline size_t	 trackRange(const size_t pTrack) const {				// Number of sectors in 'pTrack'
+		return 21 - (pTrack > 17) * 2 - (pTrack > 24) - (pTrack > 30);
+	}
+
+	inline size_t	trackCount() const {
+		return mTrackCount;
 	}
 
 	inline bool					 createdGet() {						// Was file created
