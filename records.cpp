@@ -17,56 +17,107 @@ static inline std::string rtrim(std::string s, uint8_t pChar) {
 	return s;
 }
 
-#ifndef _WIN64
-#ifndef _WIN32
+#ifndef _MSC_VER
 void localtime_s(struct tm* const _Tm, time_t const* const _Time) {
 
 	*_Tm = *localtime(_Time);
 }
 #endif
-#endif
+
+/**
+ * Retrieve a raw score, processing it if required
+ */
+std::string sRecordRaw::getScore(eGames pGame, size_t mEventID) const {
+	// Most scores use 7 characters
+	std::string res = std::string((const char*)& mScore[0], 0x07);
+	switch (pGame) {
+	default:
+		return res;
+		/**
+		 * World Games
+		 */
+	case eGAME_WORLD:
+		switch (mEventID) {
+		default:
+			return res;
+		case 6: // Caber
+			std::replace(res.begin(), res.end(), (char)0xD6, '\'');
+			std::replace(res.begin(), res.end(), (char)0xD5, '"');
+			return res;
+		case 7: // Sumo
+			return std::string((char*)& mScore[0], 0x08);
+		}
+		/**
+		 * Summer Games
+		 */
+	case eGAME_SUMMER:
+		switch (mEventID) {
+		default:
+			return res;
+		case 0: // Pole Vault
+			std::replace(res.begin(), res.end(), (char)0xB8, 'm');
+			return res;
+		}
+		/**
+		 * Summer Games II
+		 */
+	case eGAME_SUMMER2:
+		switch (mEventID) {
+		default:
+			return res;
+		case 0: // Tripple Jump
+		case 4: // High Jump
+			std::replace(res.begin(), res.end(), (char)0xB8, 'm');
+			return res;
+		}
+	}
+	return res;
+}
 
 /**
  * Comparision operator for sRecord
  */
 bool sRecord::operator<(const sRecord& pRight) const {
-
 	switch (mKnownGames[pRight.mGameID].mEventSorting[pRight.mEventID]) {
+		case 0:	// Less than
+			if (mScore < pRight.mScore)
+				return true;
+			break;
 
-	case 0:	// Less than
-		if (mScore < pRight.mScore)
-			return true;
-		break;
+		case 1:	// Greater than
+			if (mScore > pRight.mScore)
+				return true;
+			break;
 
-	case 1:	// Greater than
-		if (mScore > pRight.mScore)
-			return true;
-		break;
-
-	default:
-		std::cout << "Unknown comparision for scores: " << pRight.mGameID << " " << pRight.mEventID;
-		break;
+		default:
+			std::cout << "Unknown comparision for scores: " << pRight.mGameID << " " << pRight.mEventID;
+			break;
 	}
-
 	return false;
 }
 
-
+/**
+ * Records constructor. Load previous records from JSON
+ */
 cRecords::cRecords() {
 	mHasChanged = false;
 
 	auto json = gResources->FileRead("records.json");
-
 	if(json->size())
 		mRecords = Json::parse(json->begin(), json->end());
 }
 
+/**
+ * Save records to disk, if they've changed
+ */
 cRecords::~cRecords() {
-
 	if(mHasChanged)
 		gResources->FileSave("records.json", mRecords.dump(1));
 }
 
+/**
+ * Add a record to the database
+ */
 bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 	auto playerName = rtrim(rtrim(pRawRecords[mEventID].getName(), 0x20), 0);
 	auto playerScore = ltrim(ltrim(pRawRecords[mEventID].getScore(pGame.mGameID, mEventID), 0x20), 0);
@@ -253,10 +304,11 @@ tRecordMap cRecords::getByGame(eGames pGame) {
 		for (auto& record : event_records) {
 			records.push_back( sRecord{ record["gameid"], record["eventid"], record["name"], record["score"], record["date"] });
 		}
+		// Enough to sort
 		if (records.size() > 1) {
 			std::sort(records.begin(), records.end(), [](auto& a, auto& b) {
 				return a < b;
-				});
+			});
 		}
 
 		if(records.size())
