@@ -373,16 +373,18 @@ bool cD64::bamSectorFree( uint8_t &pTrack, uint8_t &pSector, uint8_t pDirectoryT
 		if( track == 0 ) {
 			moveDown = false;
 			track += (pDirectoryTrack + 1);
-			if((wrapped=!wrapped))
+			if(wrapped)
 				break;
+			wrapped = true;
 		}
 		
 		// At last track on disk?
 		if( track > mTrackCount ) {
 			moveDown = true;
 			track = (pDirectoryTrack - 1);
-			if((wrapped = !wrapped))
+			if(wrapped)
 				break;
+			wrapped = true;
 		}
 		
 		// Start at first sector of track
