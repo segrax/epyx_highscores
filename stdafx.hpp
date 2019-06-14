@@ -43,3 +43,4 @@ inline std::string str_to_upper(std::string pStr) {
 	std::transform(pStr.begin(), pStr.end(), pStr.begin(), ::toupper);
 	return pStr;
 }
+

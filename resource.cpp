@@ -1,6 +1,8 @@
 #include "stdafx.hpp"
 #include <sstream>
 #include <fstream>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 tSharedBuffer cResource::FileRead(const std::string& pFile) {
 	std::ifstream* fileStream;
@@ -141,6 +143,7 @@ std::vector<std::string> cResource::directoryList(const std::string& pPath, cons
 
 #else
 #include <dirent.h>
+#include <unistd.h>
 std::string findType;
 
 std::string cResource::getcwd() {
@@ -161,7 +164,7 @@ int file_select(const struct dirent* entry) {
 	return true;
 }
 
-std::vector<std::string> cResource::DirectoryList(const std::string& pPath, const std::string& pExtension) {
+std::vector<std::string> cResource::directoryList(const std::string& pPath, const std::string& pExtension) {
 	struct dirent** directFiles;
 	std::vector<std::string>		  results;
 

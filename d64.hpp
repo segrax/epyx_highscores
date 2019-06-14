@@ -93,16 +93,16 @@ private:
 	bool						 bamTest( );																		// Test the BAM against the real one
 
 	void						 directoryLoad();																	// Load the disk directory
-	sD64File					*directoryEntryLoad( unsigned char *pBuffer );												// Load an entry
+	sD64File					*directoryEntryLoad(uint8_t*pBuffer );												// Load an entry
 	bool						 directoryAdd( sD64File *pFile );													// Add file to directory
-	bool						 directoryEntrySet( unsigned char pEntryPos, sD64File *pFile, unsigned char *pBuffer );				// Set the directory entry in the buffer
+	bool						 directoryEntrySet(uint8_t pEntryPos, sD64File *pFile, uint8_t*pBuffer );				// Set the directory entry in the buffer
 	
 	void						 filesCleanup();										// Memory Cleanup
 	bool						 fileLoad( sD64File *pFile );							// Load a file from the disk
 
 
 
-	inline bool					 bamTrackSectorUse( unsigned char pTrack, unsigned char pSector ) {	// Is 'pTrack' / 'pSector' free?
+	inline bool					 bamTrackSectorUse(uint8_t pTrack, uint8_t pSector ) {	// Is 'pTrack' / 'pSector' free?
 		if( pTrack == 0 || pTrack > mTrackCount || pSector > trackRange(pTrack) )
 			return false;
 
@@ -114,13 +114,12 @@ public:
 								~cD64( );
 
 	std::vector< sD64File* >	 directoryGet( std::string  pFind );		// Get a file list, with all files starting with 'pFind'
-	std::vector< sD64File* >	*directoryGet();					// Get the file list
-	
+
 	bool						 diskTest();						// Check a disk for errors
 	bool						 diskWrite();						// Write the buffer to the D64
 
 	sD64File					*fileGet( std::string  pFilename );		// Get a file
-	bool						 fileSave( std::string  pFilename, unsigned char *pData, size_t pBytes, uint16_t pLoadAddress );// Save a file to the disk
+	bool						 fileSave( std::string  pFilename, uint8_t *pData, size_t pBytes, uint16_t pLoadAddress );// Save a file to the disk
 
 	inline size_t				 sectorsFree() {					// Number of free sectors on disk
 		size_t result = 0;
@@ -140,10 +139,10 @@ public:
 		return mTrackCount;
 	}
 
-	inline bool					 createdGet() {						// Was file created
+	inline bool	createdGet() {						// Was file created
 		return mCreated;
 	}
 
 
-	std::string					disklabelGet();
+	std::string	disklabelGet();
 };

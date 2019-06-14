@@ -373,7 +373,7 @@ bool cD64::bamSectorFree( uint8_t &pTrack, uint8_t &pSector, uint8_t pDirectoryT
 		if( track == 0 ) {
 			moveDown = false;
 			track += (pDirectoryTrack + 1);
-			if(wrapped++)
+			if((wrapped=!wrapped))
 				break;
 		}
 		
@@ -381,7 +381,7 @@ bool cD64::bamSectorFree( uint8_t &pTrack, uint8_t &pSector, uint8_t pDirectoryT
 		if( track > mTrackCount ) {
 			moveDown = true;
 			track = (pDirectoryTrack - 1);
-			if(wrapped++)
+			if((wrapped = !wrapped))
 				break;
 		}
 		

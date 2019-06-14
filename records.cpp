@@ -17,6 +17,15 @@ static inline std::string rtrim(std::string s, uint8_t pChar) {
 	return s;
 }
 
+#ifndef _WIN64
+#ifndef _WIN32
+void localtime_s(struct tm* const _Tm, time_t const* const _Time) {
+
+	*_Tm = *localtime(_Time);
+}
+#endif
+#endif
+
 /**
  * Comparision operator for sRecord
  */
@@ -70,8 +79,11 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 	// Look for this record
 	for (auto& event_records : mRecords[pGame.mName]) {
 		for (auto& event_record : event_records) {
-			if (!playerName.compare(event_record["name"]))
-				if (!playerScore.compare(event_record["score"]))
+			std::string name = event_record["name"];
+			std::string score = event_record["score"];
+
+			if (!playerName.compare(name))
+				if (!playerScore.compare(score))
 					return false;
 		}
 	}
@@ -210,8 +222,9 @@ tRecords cRecords::getByName(std::string pName) {
 
 			// Each record
 			for (auto& record : event_records) {
+				std::string name = record["name"];
 
-				if (!pName.compare(record["name"])) {
+				if (!pName.compare(name)) {
 					result.push_back({ record["gameid"], record["eventid"], record["name"], record["score"], record["date"] });
 				}
 			}
