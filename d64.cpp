@@ -744,7 +744,7 @@ bool cD64::fileSave( std::string pFilename, uint8_t *pData, size_t pBytes, uint1
 }
 
 // Obtain pointer to 'pTrack'/'pSector' in the disk buffer
-uint8_t *cD64::sectorPtr( uint32_t pTrack, uint32_t pSector ) {
+uint8_t *cD64::sectorPtr( uint8_t pTrack, uint8_t pSector ) {
 	uint32_t	currentTrack, currentRange;
 	uint32_t	offset = 0;
 

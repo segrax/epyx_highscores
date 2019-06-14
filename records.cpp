@@ -175,8 +175,8 @@ bool cRecords::findRecordsDisk(const std::string& pFile) {
 			// Label match for this game?
 			if (Disk.disklabelGet() == knowndisk.mLabel) {
 
-				for (size_t Track = 1; Track <= Disk.trackCount(); ++Track) {
-					for (size_t Sector = 0; Sector < Disk.trackRange(Track); ++Sector) {
+				for (uint8_t Track = 1; Track <= Disk.trackCount(); ++Track) {
+					for (uint8_t Sector = 0; Sector < Disk.trackRange(Track); ++Sector) {
 						auto ptr = Disk.sectorPtr(Track, Sector);
 						auto prgLoadAddr = readLEWord(&ptr[0x02]);
 

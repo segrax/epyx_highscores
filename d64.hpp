@@ -129,7 +129,7 @@ public:
 		return result;
 	}
 
-	uint8_t* sectorPtr(uint32_t pTrack, uint32_t pSector);				// Obtain pointer to 'pTrack'/'pSector' in the disk buffer
+	uint8_t* sectorPtr(uint8_t pTrack, uint8_t pSector);				// Obtain pointer to 'pTrack'/'pSector' in the disk buffer
 	
 	inline uint8_t trackRange(const size_t pTrack) const {				// Number of sectors in 'pTrack'
 		return 21 - (pTrack > 17) * 2 - (pTrack > 24) - (pTrack > 30);
