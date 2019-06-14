@@ -89,7 +89,8 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 	}
 
 	auto& eventName = pGame.mEvents[mEventID];
-	std::cout << eventName << ": " << playerName << " - " << playerScore << "\n";
+	std::cout << std::setw(20) << eventName << ": ";
+	std::cout << std::setw(10) << playerName << " - " << std::setw(10) << playerScore << "\n";
 
 	if (mRecords[pGame.mName].find(eventName) == mRecords[pGame.mName].end()) {
 		mRecords[pGame.mName][eventName] = Json();

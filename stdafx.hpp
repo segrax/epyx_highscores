@@ -10,7 +10,7 @@ using Json = nlohmann::json;
 
 #include "d64.hpp"
 #include "resource.hpp"
-#include "epyx_highscores.hpp"
+#include "epyx_worldrecords.hpp"
 #include "records.hpp"
 
 

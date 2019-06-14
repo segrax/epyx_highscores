@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="epyx_highscores.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -28,6 +25,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="known_games.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="epyx_worldrecords.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="records.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="epyx_highscores.hpp">
+    <ClInclude Include="cxxopts.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="cxxopts.hpp">
+    <ClInclude Include="epyx_worldrecords.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

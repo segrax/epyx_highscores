@@ -11,7 +11,7 @@ all : epyx
 epyx: main
 		mv *.o obj/
 		-mkdir run
-		$(LD) -o run/epyx_highscores
+		$(LD) -o run/epyx_worldrecords
 
 main:	clean
 		$(CC) *.cpp 

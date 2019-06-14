@@ -9,7 +9,7 @@ sParameters gParameters;
 
 void cli_prepare() {
 
-	gCliOptions = std::make_shared<cxxopts::Options>("epyx_highscores", "Epyx Highscores: Save your world records");
+	gCliOptions = std::make_shared<cxxopts::Options>("epyx_worldrecords", "Epyx World Records: Keep your world records");
 	gCliOptions->allow_unrecognised_options();
 	gCliOptions->add_options()
 		("about", "About", cxxopts::value<bool>()->default_value("false"))
@@ -91,10 +91,13 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// Import D64/CRT files from a path
-	if (gParameters.mImportPath.size()) {
-		std::cout << "Importing from path\n";
-		gParameters.mImportPath = gResources->getcwd();
+	// Import D64/CRT files from a path, or current directory
+	if (gParameters.mImportPath.size() || !gParameters.mList) {
+		
+		if(!gParameters.mImportPath.size())
+			gParameters.mImportPath = gResources->getcwd();
+
+		std::cout << "Importing from path: " << gParameters.mImportPath << "\n";
 
 		std::cout << "Searching for D64 files\n";
 		auto files = gResources->directoryList(gParameters.mImportPath, "D64");
