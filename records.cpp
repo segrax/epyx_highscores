@@ -24,6 +24,10 @@ void localtime_s(struct tm* const _Tm, time_t const* const _Time) {
 }
 #endif
 
+std::string sRecordRaw::getName() const {
+	return std::string((const char*)& mName[0], 0x0A);
+}
+
 /**
  * Retrieve a raw score, processing it if required
  */

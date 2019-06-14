@@ -3,9 +3,7 @@ struct sRecordRaw {
 	uint8_t mName[0x0A];
 	uint8_t mScore[0x0A];
 
-	std::string getName() const {
-		return std::string((const char*)& mName[0], 0x0A);
-	}
+	std::string getName() const;
 	std::string getScore(eGames pGame, size_t mEventID) const;
 };
 
