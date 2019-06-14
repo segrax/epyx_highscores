@@ -76,7 +76,6 @@ struct sRecord {
 
 typedef std::vector<sRecord> tRecords;
 typedef std::map<size_t, tRecords> tRecordMap;	// EventID, Records
-typedef std::pair<size_t, tRecords> tRecordMapPair;
 
 class cRecords {
 
