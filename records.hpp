@@ -100,5 +100,6 @@ public:
 protected:
 	Json mRecords;
 
-
+private:
+	bool mHasChanged;
 };

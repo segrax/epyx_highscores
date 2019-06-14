@@ -53,6 +53,7 @@ bool sRecord::operator<(const sRecord& pRight) const {
 
 
 cRecords::cRecords() {
+	mHasChanged = false;
 
 	auto json = gResources->FileRead("records.json");
 
@@ -62,7 +63,8 @@ cRecords::cRecords() {
 
 cRecords::~cRecords() {
 
-	gResources->FileSave("records.json", mRecords.dump(1));
+	if(mHasChanged)
+		gResources->FileSave("records.json", mRecords.dump(1));
 }
 
 bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
@@ -106,6 +108,7 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 	record["date"] = std::chrono::system_clock::to_time_t(now);
 
 	mRecords[pGame.mName][eventName].emplace_back(record);
+	mHasChanged = true;
 	return true;
 }
 
