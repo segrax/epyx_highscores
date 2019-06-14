@@ -11,7 +11,7 @@ all : epyx
 epyx: main
 		mv *.o obj/
 		-rm -rf run
-		-mkdir run
+		-mkdir -p run
 		$(LD) -o run/epyx_worldrecords
 
 main:	clean
