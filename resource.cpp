@@ -73,7 +73,7 @@ bool cResource::isFile(const std::string& pPath) const {
 
 std::string cResource::getcwd() {
 	char buff[1024];
-	_getcwd(buff, 1024);
+	(void)_getcwd(buff, 1024);
 	std::string cwd(buff);
 	return cwd;
 }
@@ -103,7 +103,7 @@ std::vector<std::string> cResource::directoryList(const std::string& pPath, cons
 		return results;
 	}
 
-	delete pathFin;
+	delete[] pathFin;
 	size_t tmp = 0;
 
 	{

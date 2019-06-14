@@ -10,6 +10,7 @@ all : epyx
 
 epyx: main
 		mv *.o obj/
+		-rm -rf run
 		-mkdir run
 		$(LD) -o run/epyx_worldrecords
 
