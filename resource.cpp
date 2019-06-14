@@ -67,7 +67,7 @@ bool cResource::isFile(const std::string& pPath) const {
 
 	return false;
 }
-#ifdef WIN32
+#ifdef _MSC_VER
 #include "Windows.h"
 #include <direct.h>
 

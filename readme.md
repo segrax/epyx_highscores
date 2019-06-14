@@ -3,12 +3,14 @@
 Importing and archiving records from Epyx Games series (Summer Games, Summer Games II, Winter Games, World Games, California Games)
 
 ## Description
+
 This tool can be used to import World Records from the C64 Epyx games, both disk and the "Epyx Games Collection" cartridge release are supported.
 It will search every block of a D64, hunting for deleted world records, as well as loading the current records.
 These records are then stored in a JSON 
 
 
 ## Usage
+
 ```
 Epyx World Records: Keep your world records
 Usage:
@@ -102,6 +104,7 @@ Searching for CRT files
 ```
 
 ## Example Listing
+
 ```
 epyx_worldrecords.exe --list-all
 
