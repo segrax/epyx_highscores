@@ -43,8 +43,8 @@ void cli_prepare() {
 
 		("filter-game", "Filter records for game", cxxopts::value<std::string>()->default_value(""), "\"World Games\"")
 		("filter-name", "Filter records for name", cxxopts::value<std::string>()->default_value(""), "\"My Name\"")
-		("filter-date-before", "Filter records occurfing before date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
-		("filter-date-after", "Filter records occuring after date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
+		("filter-date-before", "Filter records occurring before date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
+		("filter-date-after", "Filter records occurring after date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
 
 		("list-all", "List records", cxxopts::value<bool>()->default_value("false"))
 
