@@ -58,7 +58,7 @@ cD64::cD64( std::string pD64, bool pCreate, bool pReadOnly ) {
 	mBuffer = gResources->FileRead( pD64 );
 
 	// Loaded size is 0 and we're not in create mode?
-	if( !mBuffer && !pCreate )
+	if( !mBuffer->size() && !pCreate )
 		return;
 
 	// Creating a file?

@@ -366,6 +366,20 @@ std::string cRecords::dumpRecordsForEvent(const eGames pGame, const size_t pEven
 				continue;
 		}
 
+		// Filter records after the provided date
+		if (gParameters.mFilterDateForward) {
+
+			if (record.mTimestamp < gParameters.mFilterDate) {
+				continue;
+			}
+		}
+		else {
+			// Filter records before the provided date
+			if (record.mTimestamp > gParameters.mFilterDate) {
+				continue;
+			}
+		}
+
 		result << std::setw(20) << game.mEvents[pEventID] << ": ";
 		result << std::setw(10) << record.mName << " - " << std::setw(10) << record.mScore << " on " << std::setw(8) << date << "\n";
 	}

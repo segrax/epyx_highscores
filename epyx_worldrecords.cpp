@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "stdafx.hpp"
 #include "cxxopts.hpp"
+#include <iomanip>
 
 std::shared_ptr<cResource> gResources;
 std::shared_ptr<cRecords> gRecords;
@@ -42,6 +43,8 @@ void cli_prepare() {
 
 		("filter-game", "Filter records for game", cxxopts::value<std::string>()->default_value(""), "\"World Games\"")
 		("filter-name", "Filter records for name", cxxopts::value<std::string>()->default_value(""), "\"My Name\"")
+		("filter-date-before", "Filter records occurfing before date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
+		("filter-date-after", "Filter records occuring after date", cxxopts::value<std::string>()->default_value(""), "\"2019-06-15\"")
 
 		("list-all", "List records", cxxopts::value<bool>()->default_value("false"))
 
@@ -67,6 +70,22 @@ void cli_process(int argc, char* argv[]) {
 	}
 	if (result["games"].as<bool>() == true) {
 		gParameters.mListKnownGames = true;
+	}
+
+	std::string filterdate = result["filter-date-after"].as<std::string>();
+	if (filterdate.size()) {
+		gParameters.mFilterDateForward = true;
+	} else {
+		filterdate = result["filter-date-before"].as<std::string>();
+		gParameters.mFilterDateForward = false;
+	}
+
+	
+	if (filterdate.size()) {
+		std::tm tm = { 0 };
+		std::istringstream ss(filterdate);
+		ss >> std::get_time(&tm, "%Y-%m-%d");
+		gParameters.mFilterDate = std::mktime(&tm);
 	}
 
 	gParameters.mFilterGame = result["filter-game"].as<std::string>();

@@ -36,8 +36,8 @@ using Json = nlohmann::json;
 #include "epyx_worldrecords.hpp"
 #include "records.hpp"
 
-extern std::shared_ptr<cResource> gResources;
 extern std::vector<sKnownGame> mKnownGames;
+extern std::shared_ptr<cResource> gResources;
 extern std::shared_ptr<cRecords> gRecords;
 extern sParameters gParameters;
 
