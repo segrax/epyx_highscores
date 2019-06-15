@@ -51,8 +51,8 @@ struct sParameters {
 	bool mListAll;			// List all records
 	bool mListKnownGames;	// Display known games list
 
-	bool mFilterDateForward;// Filter records after the date
 	size_t mFilterDate;		// Filter records from this date
+	bool mFilterDateForward;// Filter records after the date
 	std::string mFilterGame;// Filter records for this game
 	std::string mFilterName;// Filter records for this name 
 

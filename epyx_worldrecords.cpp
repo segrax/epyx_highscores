@@ -36,7 +36,7 @@ void cli_prepare() {
 	gCliOptions = std::make_shared<cxxopts::Options>("epyx_worldrecords", "Epyx World Records: Keep your world records");
 	gCliOptions->allow_unrecognised_options();
 	gCliOptions->add_options()
-		("about", "About", cxxopts::value<bool>()->default_value("false"))
+	//	("about", "About", cxxopts::value<bool>()->default_value("false"))
 		("h,help", "Help", cxxopts::value<bool>()->default_value("false"))
 
 		("games", "List known games", cxxopts::value<bool>()->default_value("false"))
