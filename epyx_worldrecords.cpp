@@ -60,9 +60,9 @@ void cli_process(int argc, char* argv[]) {
 		return;
 	}
 
-	if (result["about"].as<bool>() == true) {
-		gParameters.mAbout = true;
-	}
+	//if (result["about"].as<bool>() == true) {
+	//	gParameters.mAbout = true;
+	//}
 
 	if (result["list-all"].as<bool>() == true) {
 		gParameters.mList = true;

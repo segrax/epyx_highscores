@@ -65,9 +65,11 @@ struct sParameters {
 	sParameters() {
 		mAbout = false;
 		mHelp = false;
+
 		mList = false;
 		mListAll = false;
 		mListKnownGames = false;
+
 		mFilterDate = 0;
 		mFilterDateForward = false;
 	}
