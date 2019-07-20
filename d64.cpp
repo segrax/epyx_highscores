@@ -469,7 +469,9 @@ void cD64::directoryLoad() {
 	filesCleanup();
 
 	// Loop until the current Track/Sector is invalid
-	while( (currentTrack > 0 && currentTrack <= mTrackCount) && (currentSector <= trackRange( currentTrack )) ) {
+	while( (currentTrack > 0 && currentTrack <= mTrackCount) && 
+		(currentSector <= trackRange( currentTrack )) ) {
+
 		sectorBuffer = sectorPtr( currentTrack, currentSector );
 		uint8_t *buffer = sectorBuffer;
 		

@@ -146,7 +146,7 @@ cRecords::~cRecords() {
 /**
  * Add a record to the database
  */
-bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
+bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID, size_t mEventMapID) {
 	auto playerName = rtrim(rtrim(pRawRecords[mEventID].getName(), 0x20), 0);
 	auto playerScore = ltrim(ltrim(pRawRecords[mEventID].getScore(pGame.mGameID, mEventID), 0x20), 0);
 
@@ -169,7 +169,7 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 		}
 	}
 
-	auto& eventName = pGame.mEvents[mEventID];
+	auto& eventName = pGame.mEvents[mEventMapID];
 	std::cout << std::setw(20) << eventName << ": ";
 	std::cout << std::setw(10) << playerName << " - " << std::setw(10) << playerScore << "\n";
 
@@ -183,7 +183,7 @@ bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID) {
 	record["name"] = playerName;
 	record["score"] = playerScore;
 	record["gameid"] = pGame.mGameID;
-	record["eventid"] = mEventID;
+	record["eventid"] = mEventMapID;
 	record["date"] = std::chrono::system_clock::to_time_t(now);
 
 	mRecords[pGame.mName][eventName].emplace_back(record);
@@ -206,8 +206,33 @@ bool cRecords::importCartRecords(const std::string& pFile) {
 	uint8_t* raw = (uint8_t*) (cart->data() + 0xBC630);
 	for (auto& knowngame : mKnownGames) {
 		sRecordRaw* recordPtr = (sRecordRaw*)raw;
-		for (size_t id = 0; id < knowngame.mEvents.size(); ++id)
-			gRecords->add(recordPtr, knowngame, id);
+		for (size_t id = 0; id < knowngame.mEvents.size(); ++id) {
+			size_t AddID = id;
+
+			// Some of WinterGames have changed in the cartridge release
+			// So we map them back to the disk order
+			switch (knowngame.mGameID) {
+				case eGAME_WINTER: {
+					switch (id) {
+					default:
+						break;
+					case 2:	// Speed Skating
+						AddID = 4;
+						break;
+					case 3:	// Figure Skating
+						AddID = 2;
+						break;
+					case 4:	// Ski Kump
+						AddID = 3;
+						break;
+					}
+				}
+				default:
+					break;
+			}
+
+			gRecords->add(recordPtr, knowngame, id, AddID);
+		}
 
 		raw += (0x100);
 	}
@@ -236,7 +261,7 @@ bool cRecords::importRecordsDisk(const std::string& pFile) {
 					// + 2 to skip the PRG load address
 					sRecordRaw* RawRecords = (sRecordRaw*)(File->mBuffer->data() + 2);
 					for (size_t id = 0; id < knowngame.mEvents.size(); ++id)
-						gRecords->add(RawRecords, knowngame, id);
+						gRecords->add(RawRecords, knowngame, id, id);
 					std::cout << "\n";
 				}
 			}
@@ -280,7 +305,7 @@ bool cRecords::findRecordsDisk(const std::string& pFile) {
 							}
 							if (ok) {
 								for (size_t id = 0; id < knowngame.mEvents.size(); ++id)
-									gRecords->add(RawRecords, knowngame, id);
+									gRecords->add(RawRecords, knowngame, id, id);
 							}
 						}
 					}

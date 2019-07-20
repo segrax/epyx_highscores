@@ -49,7 +49,7 @@ public:
 	cRecords();
 	~cRecords();
 
-	bool add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID);
+	bool add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID, size_t mEventMapID);
 	bool importCartRecords(const std::string& pFile);
 	bool importRecordsDisk(const std::string& pFile);
 	bool findRecordsDisk(const std::string& pFile);
