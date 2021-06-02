@@ -413,7 +413,7 @@ bool cD64::bamSectorFree( uint8_t &pTrack, uint8_t &pSector, uint8_t pDirectoryT
 
 // Check a disk for errors
 bool cD64::diskTest() {
-	std::vector< sD64Chain >::iterator			 linkIT;
+	//std::vector< sD64Chain >::iterator			 linkIT;
 	if(!bamTest()) {
 
 		// Bam Disk test failed
