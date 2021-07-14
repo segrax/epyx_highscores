@@ -48,7 +48,10 @@ void localtime_s(struct tm* const _Tm, time_t const* const _Time) {
 }
 #endif
 
-std::string sRecordRaw::getName() const {
+std::string sRecordRaw::getName(eGames pGame, size_t mEventID) const {
+	if(pGame == eGAME_CALIFORNIA)
+		return std::string((const char*)&mName[0] + (mEventID * 1), 0x0A);
+
 	return std::string((const char*)& mName[0], 0x0A);
 }
 
@@ -61,6 +64,34 @@ std::string sRecordRaw::getScore(eGames pGame, size_t mEventID) const {
 	switch (pGame) {
 	default:
 		return res;
+
+		/**
+		 * California Games
+		 */
+	case eGAME_CALIFORNIA:
+		res = std::string((const char*)&mScore[0] + (mEventID * 1), 0x0A);
+		res = ltrim(res,0x20);
+		res.erase(std::remove_if(res.begin(), res.end(), [](auto c) {
+			if (c == 0x2E)
+				return false;
+			return !(c >= 0x20 && c < 0x60);
+		}), res.end());
+		res = ltrim(res, 0x30);
+
+		switch (mEventID) {
+		default:
+			return res;
+
+		case 5: // Flying Disk
+		case 4:	// BMX
+			res.erase(std::remove_if(res.begin(), res.end(), [](auto c) {
+				if (c == 0x2E)
+					return false;
+				return !(c >= 0x20 && c < 0x40);
+				}), res.end());
+			return res;
+		}
+
 		/**
 		 * World Games
 		 */
@@ -147,7 +178,7 @@ cRecords::~cRecords() {
  * Add a record to the database
  */
 bool cRecords::add(sRecordRaw* pRawRecords, sKnownGame pGame, size_t mEventID, size_t mEventMapID) {
-	auto playerName = rtrim(rtrim(pRawRecords[mEventID].getName(), 0x20), 0);
+	auto playerName = rtrim(rtrim(pRawRecords[mEventID].getName(pGame.mGameID, mEventID), 0x20), 0);
 	auto playerScore = ltrim(ltrim(pRawRecords[mEventID].getScore(pGame.mGameID, mEventID), 0x20), 0);
 
 	if (!playerName.size() || !playerScore.size())
